@@ -8,7 +8,9 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "postinstall": "electron-builder install-app-deps",
-    "package": "electron-vite build && electron-builder --win",
+    "package": "electron-vite build && electron-builder",
+    "package:mac": "electron-vite build && electron-builder --mac",
+    "package:win": "electron-vite build && electron-builder --win",
     "package:dir": "electron-vite build && electron-builder --dir"
   },
   "dependencies": {

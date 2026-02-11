@@ -12,6 +12,10 @@ files:
 asarUnpack:
   - resources/**
   - node_modules/sharp/**
+mac:
+  target:
+    - dmg
+    - zip
 win:
   executableName: FootFix
   target:
