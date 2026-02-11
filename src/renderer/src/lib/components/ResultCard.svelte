@@ -7,6 +7,18 @@
     expanded?: boolean
     ontoggle: () => void
   }>()
+
+  let thumbnailSrc = $state('')
+
+  $effect(() => {
+    // Load thumbnail from the processed output file
+    const path = result.outputPath
+    window.api.getPreview(path).then((src) => {
+      thumbnailSrc = src
+    }).catch(() => {
+      thumbnailSrc = ''
+    })
+  })
 </script>
 
 <div
@@ -19,6 +31,22 @@
     aria-expanded={expanded}
     aria-label="{expanded ? 'Collapse' : 'Expand'} details for {result.filename}"
   >
+    <!-- Thumbnail -->
+    <div
+      class="shrink-0 rounded overflow-hidden flex items-center justify-center"
+      style="width: 44px; height: 44px; background: var(--color-bg);"
+    >
+      {#if thumbnailSrc}
+        <img
+          src={thumbnailSrc}
+          alt={result.filename}
+          class="w-full h-full object-cover"
+        />
+      {:else}
+        <span class="text-xs" style="color: var(--color-text-muted);">...</span>
+      {/if}
+    </div>
+
     <!-- Filename + Format badge -->
     <div class="flex-1 min-w-0">
       <p class="text-sm font-medium truncate" style="color: var(--color-text);">
@@ -57,18 +85,35 @@
 
   {#if expanded}
     <div class="px-4 pb-3 border-t" style="border-color: var(--color-border);">
-      <div class="grid grid-cols-2 gap-3 mt-3 text-xs">
-        <div>
-          <span style="color: var(--color-text-muted);">Original</span>
-          <p style="color: var(--color-text);">
-            {formatDimensions(result.originalWidth, result.originalHeight)} · {formatFileSize(result.originalSize)}
-          </p>
-        </div>
-        <div>
-          <span style="color: var(--color-text-muted);">Output</span>
-          <p style="color: var(--color-text);">
-            {formatDimensions(result.outputWidth, result.outputHeight)} · {formatFileSize(result.outputSize)}
-          </p>
+      <div class="flex gap-4 mt-3">
+        <!-- Larger preview -->
+        {#if thumbnailSrc}
+          <div
+            class="shrink-0 rounded-lg overflow-hidden"
+            style="width: 120px; height: 120px; background: var(--color-bg);"
+          >
+            <img
+              src={thumbnailSrc}
+              alt={result.filename}
+              class="w-full h-full object-contain"
+            />
+          </div>
+        {/if}
+
+        <!-- Metadata -->
+        <div class="grid grid-cols-2 gap-3 text-xs flex-1">
+          <div>
+            <span style="color: var(--color-text-muted);">Original</span>
+            <p style="color: var(--color-text);">
+              {formatDimensions(result.originalWidth, result.originalHeight)} · {formatFileSize(result.originalSize)}
+            </p>
+          </div>
+          <div>
+            <span style="color: var(--color-text-muted);">Output</span>
+            <p style="color: var(--color-text);">
+              {formatDimensions(result.outputWidth, result.outputHeight)} · {formatFileSize(result.outputSize)}
+            </p>
+          </div>
         </div>
       </div>
     </div>
