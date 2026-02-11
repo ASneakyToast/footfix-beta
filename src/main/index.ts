@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, nativeImage } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { IPC } from '../shared/ipc-channels'
@@ -9,6 +9,7 @@ import { registerFileHandlers } from './file-utils'
 import { registerAltTextHandlers } from './llm-service'
 
 function createWindow(): BrowserWindow {
+  const iconPath = join(__dirname, '../../resources/icon.png')
   const mainWindow = new BrowserWindow({
     width: 1100,
     height: 750,
@@ -16,6 +17,7 @@ function createWindow(): BrowserWindow {
     minHeight: 600,
     show: false,
     title: 'FootFix',
+    icon: nativeImage.createFromPath(iconPath),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -42,8 +44,15 @@ function createWindow(): BrowserWindow {
   return mainWindow
 }
 
+app.setName('FootFix')
+
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.footfix.beta')
+
+  if (process.platform === 'darwin') {
+    const iconPath = join(__dirname, '../../resources/icon.png')
+    app.dock.setIcon(nativeImage.createFromPath(iconPath))
+  }
 
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)

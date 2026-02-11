@@ -1,0 +1,237 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="furBase" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F5A623"/>
+      <stop offset="100%" stop-color="#E08A10"/>
+    </linearGradient>
+    <radialGradient id="furHighlight" cx="0.45" cy="0.3" r="0.6">
+      <stop offset="0%" stop-color="#FFD06B"/>
+      <stop offset="50%" stop-color="#F5A623"/>
+      <stop offset="100%" stop-color="#E08A10"/>
+    </radialGradient>
+    <linearGradient id="earPink" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFB5C5"/>
+      <stop offset="100%" stop-color="#F48DA0"/>
+    </linearGradient>
+    <radialGradient id="eyeGreen" cx="0.45" cy="0.4" r="0.5">
+      <stop offset="0%" stop-color="#8AE65C"/>
+      <stop offset="50%" stop-color="#4CAF50"/>
+      <stop offset="100%" stop-color="#2E7D32"/>
+    </radialGradient>
+    <linearGradient id="skinTone" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFCCAA"/>
+      <stop offset="100%" stop-color="#F0B088"/>
+    </linearGradient>
+    <linearGradient id="skinToneH" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#E8A880"/>
+      <stop offset="50%" stop-color="#FFCCAA"/>
+      <stop offset="100%" stop-color="#E8A880"/>
+    </linearGradient>
+    <linearGradient id="toeNail" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFE8DD"/>
+      <stop offset="100%" stop-color="#F5C4B0"/>
+    </linearGradient>
+    <radialGradient id="noseGrad" cx="0.5" cy="0.35" r="0.55">
+      <stop offset="0%" stop-color="#FFB0B8"/>
+      <stop offset="100%" stop-color="#E87D8A"/>
+    </radialGradient>
+    <linearGradient id="tonguePink" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF8A9E"/>
+      <stop offset="100%" stop-color="#E8607A"/>
+    </linearGradient>
+    <radialGradient id="bellyWhite" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#FFF5E6"/>
+    </radialGradient>
+    <radialGradient id="mouthDark" cx="0.5" cy="0.5" r="0.6">
+      <stop offset="0%" stop-color="#3A0A1A"/>
+      <stop offset="100%" stop-color="#1A0008"/>
+    </radialGradient>
+    <filter id="shadow" x="-8%" y="-8%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#00000022"/>
+    </filter>
+    <filter id="shadowSmall" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#00000018"/>
+    </filter>
+  </defs>
+
+  <!-- ============ TAIL (behind everything) ============ -->
+  <g filter="url(#shadowSmall)">
+    <path d="M 180 480 Q 100 380, 90 280 Q 85 200, 120 150 Q 148 115, 175 130 Q 190 140, 180 160"
+          fill="none" stroke="#D48A12" stroke-width="50" stroke-linecap="round" opacity="0.25"/>
+    <path d="M 180 480 Q 100 380, 90 280 Q 85 200, 120 150 Q 148 115, 175 130 Q 190 140, 180 160"
+          fill="none" stroke="#F5A623" stroke-width="44" stroke-linecap="round"/>
+    <!-- Tail stripes -->
+    <path d="M 108 270 Q 120 248, 106 232" fill="none" stroke="#C47210" stroke-width="8" stroke-linecap="round" opacity="0.7"/>
+    <path d="M 100 220 Q 115 198, 110 178" fill="none" stroke="#C47210" stroke-width="8" stroke-linecap="round" opacity="0.65"/>
+    <path d="M 118 320 Q 126 298, 114 282" fill="none" stroke="#C47210" stroke-width="8" stroke-linecap="round" opacity="0.65"/>
+    <circle cx="180" cy="150" r="12" fill="#C47210"/>
+  </g>
+
+  <!-- ============ FOOT entering from bottom ============ -->
+  <g filter="url(#shadow)">
+    <!-- Foot/ankle — comes up from bottom-center, angled slightly right -->
+    <path d="M 600 1060 Q 570 960, 540 880 Q 520 830, 500 800 Q 480 775, 460 768"
+          fill="url(#skinTone)" stroke="#D4956A" stroke-width="4.5" stroke-linejoin="round"/>
+    <path d="M 660 1060 Q 620 940, 590 870 Q 565 820, 540 795 Q 520 778, 500 774
+             L 460 768 Q 480 775, 500 800 Q 520 830, 540 880 Q 570 960, 600 1060 Z"
+          fill="#E8A880" stroke="none" opacity="0.5"/>
+
+    <!-- Small toes (behind big toe, peeking) -->
+    <ellipse cx="520" cy="762" rx="25" ry="20" fill="#FFCCAA" stroke="#D4956A" stroke-width="2.5"/>
+    <ellipse cx="548" cy="770" rx="21" ry="17" fill="#FFCCAA" stroke="#D4956A" stroke-width="2.5"/>
+    <ellipse cx="572" cy="782" rx="18" ry="15" fill="#FFCCAA" stroke="#D4956A" stroke-width="2.5"/>
+
+    <!-- Big toe — pointing upward into cat's mouth -->
+    <ellipse cx="470" cy="730" rx="52" ry="42" fill="url(#skinToneH)" stroke="#D4956A" stroke-width="4" transform="rotate(-15, 470, 730)"/>
+    <!-- Toenail -->
+    <path d="M 432 704 Q 424 692, 428 680 Q 436 668, 450 670 Q 458 672, 460 684 Q 460 696, 450 706 Z"
+          fill="url(#toeNail)" stroke="#DDA88A" stroke-width="2.5"/>
+    <!-- Toe crease -->
+    <path d="M 498 714 Q 494 732, 500 750" fill="none" stroke="#DDA88A" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+  </g>
+
+  <!-- ============ CAT BODY ============ -->
+  <g filter="url(#shadow)">
+    <!-- Body -->
+    <ellipse cx="420" cy="620" rx="230" ry="200" fill="url(#furBase)"/>
+    <!-- White belly -->
+    <ellipse cx="420" cy="660" rx="140" ry="150" fill="url(#bellyWhite)"/>
+    <!-- Body stripes -->
+    <path d="M 248 540 Q 268 565, 258 595" fill="none" stroke="#C47210" stroke-width="11" stroke-linecap="round" opacity="0.6"/>
+    <path d="M 232 585 Q 252 615, 242 645" fill="none" stroke="#C47210" stroke-width="10" stroke-linecap="round" opacity="0.5"/>
+    <path d="M 592 548 Q 572 575, 582 605" fill="none" stroke="#C47210" stroke-width="11" stroke-linecap="round" opacity="0.6"/>
+    <path d="M 608 595 Q 588 625, 598 655" fill="none" stroke="#C47210" stroke-width="10" stroke-linecap="round" opacity="0.5"/>
+
+    <!-- LEFT PAW (gripping toe from left) -->
+    <path d="M 390 720 Q 408 745, 438 738 Q 458 730, 462 712 Q 464 695, 448 688 Q 432 682, 414 690 Q 396 700, 390 718 Z"
+          fill="url(#furBase)" stroke="#C47210" stroke-width="3"/>
+    <circle cx="438" cy="718" r="6" fill="#F48DA0" opacity="0.8"/>
+    <circle cx="450" cy="706" r="5" fill="#F48DA0" opacity="0.7"/>
+    <circle cx="456" cy="695" r="4.5" fill="#F48DA0" opacity="0.65"/>
+
+    <!-- RIGHT PAW (gripping toe from right) -->
+    <path d="M 488 692 Q 505 680, 520 690 Q 534 702, 530 722 Q 524 740, 506 744 Q 488 746, 478 732 Q 472 718, 480 702 Z"
+          fill="url(#furBase)" stroke="#C47210" stroke-width="3"/>
+    <circle cx="510" cy="724" r="6" fill="#F48DA0" opacity="0.8"/>
+    <circle cx="520" cy="712" r="5" fill="#F48DA0" opacity="0.7"/>
+  </g>
+
+  <!-- ============ CAT HEAD (the main focus) ============ -->
+  <g filter="url(#shadow)">
+    <!-- Head -->
+    <ellipse cx="420" cy="350" rx="235" ry="218" fill="url(#furHighlight)"/>
+
+    <!-- LEFT EAR -->
+    <path d="M 242 220 L 185 55 L 325 175 Z" fill="url(#furBase)" stroke="#C47210" stroke-width="5"/>
+    <path d="M 254 214 L 208 82 L 316 180 Z" fill="url(#earPink)"/>
+    <!-- RIGHT EAR -->
+    <path d="M 598 220 L 655 55 L 515 175 Z" fill="url(#furBase)" stroke="#C47210" stroke-width="5"/>
+    <path d="M 586 214 L 632 82 L 524 180 Z" fill="url(#earPink)"/>
+
+    <!-- FOREHEAD TABBY M -->
+    <path d="M 335 235 Q 348 198, 372 215 Q 392 185, 420 220 Q 448 185, 468 215 Q 492 198, 505 235"
+          fill="none" stroke="#C47210" stroke-width="12" stroke-linecap="round" opacity="0.8"/>
+    <!-- Side stripes -->
+    <path d="M 246 296 Q 272 282, 286 306" fill="none" stroke="#C47210" stroke-width="9" stroke-linecap="round" opacity="0.6"/>
+    <path d="M 236 340 Q 262 326, 276 350" fill="none" stroke="#C47210" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+    <path d="M 594 296 Q 568 282, 554 306" fill="none" stroke="#C47210" stroke-width="9" stroke-linecap="round" opacity="0.6"/>
+    <path d="M 604 340 Q 578 326, 564 350" fill="none" stroke="#C47210" stroke-width="8" stroke-linecap="round" opacity="0.5"/>
+
+    <!-- CHEEK FLUFF -->
+    <ellipse cx="326" cy="415" rx="72" ry="58" fill="white" opacity="0.5"/>
+    <ellipse cx="514" cy="415" rx="72" ry="58" fill="white" opacity="0.5"/>
+
+    <!-- ===== EYES (mischievous, looking down at the toe) ===== -->
+    <!-- Left eye -->
+    <g>
+      <ellipse cx="340" cy="318" rx="54" ry="48" fill="white" stroke="#3A3A3A" stroke-width="4"/>
+      <ellipse cx="345" cy="326" rx="32" ry="35" fill="url(#eyeGreen)"/>
+      <ellipse cx="345" cy="326" rx="12" ry="32" fill="#1A1A1A"/>
+      <circle cx="358" cy="310" r="11" fill="white" opacity="0.9"/>
+      <circle cx="338" cy="340" r="6" fill="white" opacity="0.4"/>
+      <!-- Squint -->
+      <path d="M 290 306 Q 340 282, 390 302" fill="url(#furHighlight)" stroke="#C47210" stroke-width="2.5"/>
+    </g>
+    <!-- Right eye -->
+    <g>
+      <ellipse cx="500" cy="318" rx="54" ry="48" fill="white" stroke="#3A3A3A" stroke-width="4"/>
+      <ellipse cx="495" cy="326" rx="32" ry="35" fill="url(#eyeGreen)"/>
+      <ellipse cx="495" cy="326" rx="12" ry="32" fill="#1A1A1A"/>
+      <circle cx="508" cy="310" r="11" fill="white" opacity="0.9"/>
+      <circle cx="488" cy="340" r="6" fill="white" opacity="0.4"/>
+      <path d="M 450 302 Q 500 282, 550 306" fill="url(#furHighlight)" stroke="#C47210" stroke-width="2.5"/>
+    </g>
+
+    <!-- EYEBROWS -->
+    <path d="M 292 272 Q 328 248, 380 266" fill="none" stroke="#A85E0A" stroke-width="7" stroke-linecap="round"/>
+    <path d="M 548 272 Q 512 248, 460 266" fill="none" stroke="#A85E0A" stroke-width="7" stroke-linecap="round"/>
+
+    <!-- NOSE -->
+    <path d="M 420 386 L 405 412 L 435 412 Z" fill="url(#noseGrad)" stroke="#D46A78" stroke-width="3"/>
+
+    <!-- ===== WHISKERS ===== -->
+    <line x1="196" y1="392" x2="306" y2="404" stroke="#E0D8C8" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="186" y1="424" x2="302" y2="422" stroke="#E0D8C8" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="200" y1="456" x2="308" y2="440" stroke="#E0D8C8" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="644" y1="392" x2="534" y2="404" stroke="#E0D8C8" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="654" y1="424" x2="538" y2="422" stroke="#E0D8C8" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="640" y1="456" x2="532" y2="440" stroke="#E0D8C8" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Whisker dots -->
+    <circle cx="318" cy="416" r="4.5" fill="#C47210"/>
+    <circle cx="330" cy="424" r="4.5" fill="#C47210"/>
+    <circle cx="320" cy="432" r="4.5" fill="#C47210"/>
+    <circle cx="522" cy="416" r="4.5" fill="#C47210"/>
+    <circle cx="510" cy="424" r="4.5" fill="#C47210"/>
+    <circle cx="520" cy="432" r="4.5" fill="#C47210"/>
+
+    <!-- ===== MOUTH — open wide, chomping on the toe ===== -->
+    <!-- The mouth is lower on the face, positioned to connect with the toe -->
+
+    <!-- Upper jaw / mouth interior -->
+    <path d="M 345 435 Q 382 448, 420 444 Q 458 448, 495 435
+             Q 492 490, 462 516 Q 440 530, 420 528 Q 400 530, 378 516 Q 348 490, 345 435 Z"
+          fill="url(#mouthDark)" stroke="#2A0010" stroke-width="3"/>
+
+    <!-- Gum line -->
+    <path d="M 350 438 Q 382 450, 420 446 Q 458 450, 490 438"
+          fill="none" stroke="#FF8899" stroke-width="4" stroke-linecap="round" opacity="0.45"/>
+
+    <!-- Upper teeth -->
+    <path d="M 374 440 L 378 460 L 382 440" fill="white" stroke="#EEE" stroke-width="1.2"/>
+    <path d="M 400 443 L 404 460 L 408 443" fill="white" stroke="#EEE" stroke-width="1.2"/>
+    <path d="M 432 443 L 436 460 L 440 443" fill="white" stroke="#EEE" stroke-width="1.2"/>
+    <path d="M 458 440 L 462 460 L 466 440" fill="white" stroke="#EEE" stroke-width="1.2"/>
+    <!-- FANGS -->
+    <path d="M 354 436 L 362 480 L 370 438" fill="white" stroke="#E0E0E0" stroke-width="2"/>
+    <path d="M 470 438 L 478 480 L 486 436" fill="white" stroke="#E0E0E0" stroke-width="2"/>
+
+    <!-- Lower jaw -->
+    <path d="M 356 516 Q 382 548, 420 552 Q 458 548, 484 516
+             Q 472 538, 420 544 Q 368 538, 356 516 Z"
+          fill="url(#mouthDark)" stroke="#2A0010" stroke-width="2"/>
+    <!-- Lower teeth -->
+    <path d="M 388 538 L 392 522 L 396 538" fill="white" stroke="#EEE" stroke-width="1"/>
+    <path d="M 414 540 L 418 524 L 422 540" fill="white" stroke="#EEE" stroke-width="1"/>
+    <path d="M 440 538 L 444 522 L 448 538" fill="white" stroke="#EEE" stroke-width="1"/>
+
+    <!-- Tongue peeking around the toe -->
+    <ellipse cx="410" cy="535" rx="26" ry="12" fill="url(#tonguePink)"/>
+    <ellipse cx="445" cy="530" rx="18" ry="10" fill="url(#tonguePink)" opacity="0.7"/>
+  </g>
+
+  <!-- ============ TOE IN MOUTH (rendered on top of everything) ============ -->
+  <!-- The big toe tip visible between upper and lower jaw -->
+  <g>
+    <!-- Toe flesh visible in the mouth opening -->
+    <ellipse cx="420" cy="500" rx="40" ry="28" fill="#FFCCAA" stroke="#D4956A" stroke-width="2.5" transform="rotate(-8, 420, 500)"/>
+    <!-- Toe highlight -->
+    <ellipse cx="415" cy="492" rx="22" ry="12" fill="#FFD8BA" opacity="0.6" transform="rotate(-8, 415, 492)"/>
+    <!-- Small nail edge peeking -->
+    <path d="M 390 486 Q 385 478, 390 470 Q 398 464, 406 468 Q 410 476, 404 486 Z"
+          fill="#FFE0D0" stroke="#DDA88A" stroke-width="1.5" opacity="0.85"/>
+    <!-- Bite marks / pressure dimples on the toe -->
+    <ellipse cx="400" cy="508" rx="3" ry="2" fill="#E0A080" opacity="0.5"/>
+    <ellipse cx="440" cy="506" rx="3" ry="2" fill="#E0A080" opacity="0.5"/>
+  </g>
+</svg>
