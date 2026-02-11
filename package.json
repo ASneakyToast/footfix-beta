@@ -2,6 +2,7 @@
   "name": "footfix-beta",
   "version": "1.0.0",
   "description": "Batch image resizer with LLM-powered alt text generation",
+  "author": "Joel Lithgow",
   "main": "./out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
