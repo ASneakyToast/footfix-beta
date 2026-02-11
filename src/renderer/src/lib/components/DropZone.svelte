@@ -31,7 +31,7 @@
     const files = Array.from(fileList)
       .filter((f) => f.type.startsWith('image/'))
       .map((f) => ({
-        path: f.path,
+        path: window.api.getFilePath(f),
         name: f.name,
         size: f.size
       }))

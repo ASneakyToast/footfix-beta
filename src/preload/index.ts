@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron'
+import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import { IPC } from '../shared/ipc-channels'
 import type {
   AppSettings,
@@ -10,6 +10,9 @@ import type {
 } from '../shared/types'
 
 const api = {
+  // File utilities
+  getFilePath: (file: File): string => webUtils.getPathForFile(file),
+
   // Image processing
   processImages: (request: ProcessRequest): Promise<ProcessResult> =>
     ipcRenderer.invoke(IPC.IMAGES_PROCESS, request),
