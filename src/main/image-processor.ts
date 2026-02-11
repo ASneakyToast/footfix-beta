@@ -24,6 +24,10 @@ async function processImage(
   index: number,
   win: BrowserWindow
 ): Promise<ImageResult> {
+  if (!filePath || typeof filePath !== 'string') {
+    throw new Error(`Invalid file path: expected a non-empty string, got ${typeof filePath}`)
+  }
+
   const filename = filePath.split(/[\\/]/).pop() || 'unknown'
 
   sendProgress(win, { index, total: opts.filePaths.length, filename, phase: 'resizing' })
@@ -104,7 +108,8 @@ async function processImage(
     width: outputWidth,
     height: outputHeight,
     format: opts.format,
-    counter: index + 1
+    counter: index + 1,
+    fieldValues: opts.templateFieldValues || {}
   })
 
   // Ensure output folder exists
@@ -165,6 +170,10 @@ export function registerImageHandlers(mainWindow: BrowserWindow): void {
   })
 
   ipcMain.handle(IPC.IMAGES_PREVIEW, async (_, filePath: string): Promise<string> => {
+    if (!filePath || typeof filePath !== 'string') {
+      throw new Error(`Invalid file path for preview: expected a non-empty string, got ${typeof filePath}`)
+    }
+
     const buffer = await sharp(filePath)
       .resize(200, 200, { fit: 'inside' })
       .jpeg({ quality: 60 })

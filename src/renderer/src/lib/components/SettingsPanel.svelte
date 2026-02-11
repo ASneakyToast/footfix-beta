@@ -21,7 +21,7 @@
     }
   }
 
-  function handleTextInput(field: 'filenameTemplate' | 'llmProvider' | 'llmModel' | 'llmApiKey' | 'altTextPrompt') {
+  function handleTextInput(field: 'filenameTemplate' | 'userInitials' | 'llmProvider' | 'llmModel' | 'llmApiKey' | 'altTextPrompt') {
     return (e: Event) => {
       updateSettings({ [field]: (e.currentTarget as HTMLInputElement | HTMLTextAreaElement).value })
     }
@@ -150,8 +150,23 @@
           style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
         />
         <p class="text-xs" style="color: var(--color-text-muted);">
-          Tokens: {'{name}'}, {'{width}'}, {'{height}'}, {'{format}'}, {'{quality}'}
+          Tokens: {'{filename}'}, {'{width}'}, {'{height}'}, {'{date}'}, {'{counter}'}, {'{format}'}, {'{ext}'}, {'{project_name}'}, {'{user_initials}'}, {'{month}'}, {'{year}'}
         </p>
+      </div>
+
+      <!-- User Initials -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-sm font-medium" for="user-initials">User Initials</label>
+        <input
+          id="user-initials"
+          type="text"
+          value={settingsState.settings.userInitials}
+          onchange={handleTextInput('userInitials')}
+          placeholder="e.g. JL"
+          class="px-3 py-2 rounded-lg text-sm border"
+          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text); max-width: 120px;"
+        />
+        <p class="text-xs" style="color: var(--color-text-muted);">Used as default for the {'{user_initials}'} template token.</p>
       </div>
     </div>
   </section>

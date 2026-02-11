@@ -1,5 +1,50 @@
 export type ImageFormat = 'jpeg' | 'webp' | 'png'
 
+// --- Token Registry ---
+
+export type TokenCategory = 'user_input' | 'settings_derived' | 'date_auto' | 'counter' | 'per_file'
+
+export interface TokenDefinition {
+  key: string
+  label: string
+  category: TokenCategory
+  settingsKey?: string
+  placeholder: string
+  mockValue: string
+}
+
+export const TOKEN_DEFINITIONS: TokenDefinition[] = [
+  // User input
+  { key: 'project_name', label: 'Project Name', category: 'user_input', placeholder: 'e.g. hero-banners', mockValue: 'my-project' },
+  // Settings-derived
+  { key: 'user_initials', label: 'User Initials', category: 'settings_derived', settingsKey: 'userInitials', placeholder: 'e.g. JL', mockValue: 'JL' },
+  // Date auto
+  { key: 'month', label: 'Month', category: 'date_auto', placeholder: 'MM', mockValue: String(new Date().getMonth() + 1).padStart(2, '0') },
+  { key: 'year', label: 'Year', category: 'date_auto', placeholder: 'YYYY', mockValue: String(new Date().getFullYear()) },
+  { key: 'date', label: 'Date', category: 'date_auto', placeholder: 'YYYYMMDD', mockValue: new Date().toISOString().slice(0, 10).replace(/-/g, '') },
+  // Counter
+  { key: 'counter', label: 'Counter Start', category: 'counter', placeholder: '1', mockValue: '001' },
+  // Per-file (auto per image)
+  { key: 'filename', label: 'Original Name', category: 'per_file', placeholder: 'filename', mockValue: 'photo' },
+  { key: 'width', label: 'Width', category: 'per_file', placeholder: 'px', mockValue: '1920' },
+  { key: 'height', label: 'Height', category: 'per_file', placeholder: 'px', mockValue: '1080' },
+  { key: 'format', label: 'Format', category: 'per_file', placeholder: 'jpeg', mockValue: 'jpeg' },
+  { key: 'ext', label: 'Extension', category: 'per_file', placeholder: 'jpg', mockValue: 'jpg' }
+]
+
+export const TOKEN_MAP: Record<string, TokenDefinition> = Object.fromEntries(
+  TOKEN_DEFINITIONS.map((t) => [t.key, t])
+)
+
+export function extractTokenKeys(template: string): string[] {
+  const matches = template.matchAll(/\{(\w+)\}/g)
+  return [...matches].map((m) => m[1]).filter((k) => k in TOKEN_MAP)
+}
+
+export type TemplateFieldValues = Record<string, string>
+
+// --- Settings ---
+
 export interface AppSettings {
   outputFolder: string
   format: ImageFormat
@@ -7,6 +52,7 @@ export interface AppSettings {
   targetFileSize: number // bytes
   sizeTolerance: number // bytes
   filenameTemplate: string
+  userInitials: string
   llmProvider: string
   llmModel: string
   llmApiKey: string // encrypted at rest
@@ -19,7 +65,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   maxDimension: 2560,
   targetFileSize: 1_000_000, // 1MB
   sizeTolerance: 50_000, // 50KB
-  filenameTemplate: '{name}_{width}x{height}',
+  filenameTemplate: '{filename}_{width}x{height}',
+  userInitials: '',
   llmProvider: 'openai',
   llmModel: 'gpt-4o',
   llmApiKey: '',
@@ -47,6 +94,7 @@ export interface ProcessRequest {
   targetFileSize: number
   sizeTolerance: number
   filenameTemplate: string
+  templateFieldValues: TemplateFieldValues
 }
 
 export interface ImageResult {

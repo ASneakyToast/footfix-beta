@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { getJobState, processImages, cancelProcessing } from '../stores/job-store.svelte'
-  import { getSettingsState } from '../stores/settings-store.svelte'
+  import { getJobState, processImages, cancelProcessing, setTemplateFieldValue, setActivePresetId } from '../stores/job-store.svelte'
+  import { getSettingsState, updateSettings, selectOutputFolder } from '../stores/settings-store.svelte'
   import PresetSelector from './PresetSelector.svelte'
-  import FilenamePreview from './FilenamePreview.svelte'
+  import TemplateFieldEditor from './TemplateFieldEditor.svelte'
 
   const job = getJobState()
   const settings = getSettingsState()
@@ -10,6 +10,16 @@
   let canStart = $derived(
     job.queue.length > 0 && !!settings.settings.outputFolder && !job.processing
   )
+
+  let presetActive = $derived(job.activePresetId !== null)
+
+  // Sync user_initials from settings when not already overridden
+  $effect(() => {
+    const initials = settings.settings.userInitials
+    if (initials && !job.templateFieldValues.user_initials) {
+      setTemplateFieldValue('user_initials', initials)
+    }
+  })
 
   function handleStart() {
     const s = settings.settings
@@ -19,8 +29,18 @@
       maxDimension: s.maxDimension,
       targetFileSize: s.targetFileSize,
       sizeTolerance: s.sizeTolerance,
-      filenameTemplate: s.filenameTemplate
+      filenameTemplate: s.filenameTemplate,
+      templateFieldValues: job.templateFieldValues
     })
+  }
+
+  function handleTemplateChange(template: string) {
+    updateSettings({ filenameTemplate: template })
+    setActivePresetId(null)
+  }
+
+  function handleFieldChange(key: string, value: string) {
+    setTemplateFieldValue(key, value)
   }
 </script>
 
@@ -31,9 +51,40 @@
     <PresetSelector />
   </div>
 
-  <!-- Filename Preview -->
+  <!-- Filename Template -->
   <div class="rounded-lg p-4" style="background: var(--color-surface);">
-    <FilenamePreview template={settings.settings.filenameTemplate} />
+    <h3 class="text-sm font-medium mb-3" style="color: var(--color-text-muted);">
+      Filename Template
+    </h3>
+    <TemplateFieldEditor
+      template={settings.settings.filenameTemplate}
+      templateLocked={presetActive}
+      fieldValues={job.templateFieldValues}
+      format={settings.settings.format}
+      userInitials={settings.settings.userInitials}
+      ontemplatechange={handleTemplateChange}
+      onfieldchange={handleFieldChange}
+    />
+  </div>
+
+  <!-- Output Folder -->
+  <div class="rounded-lg p-4" style="background: var(--color-surface);">
+    <h3 class="text-sm font-medium mb-2" style="color: var(--color-text-muted);">Output Folder</h3>
+    <div class="flex items-center gap-2">
+      <span
+        class="flex-1 px-3 py-2 rounded-lg text-sm truncate"
+        style="background: var(--color-bg); color: {settings.settings.outputFolder ? 'var(--color-text)' : 'var(--color-text-muted)'};"
+      >
+        {settings.settings.outputFolder || 'No folder selected'}
+      </span>
+      <button
+        onclick={selectOutputFolder}
+        class="px-4 py-2 rounded-lg text-sm font-medium shrink-0"
+        style="background: var(--color-accent); color: var(--color-text);"
+      >
+        Browse
+      </button>
+    </div>
   </div>
 
   <!-- Action Buttons -->
@@ -55,12 +106,6 @@
       >
         Cancel
       </button>
-    {/if}
-
-    {#if !settings.settings.outputFolder}
-      <span class="text-xs" style="color: var(--color-warning);">
-        Set an output folder in Settings first
-      </span>
     {/if}
   </div>
 </div>

@@ -1,16 +1,46 @@
 <script lang="ts">
-  const { template } = $props<{ template: string }>()
+  import type { TemplateFieldValues } from '../../../../shared/types'
+
+  const { template, fieldValues = {} } = $props<{
+    template: string
+    fieldValues?: TemplateFieldValues
+  }>()
+
+  const now = new Date()
 
   const mockValues: Record<string, string> = {
-    name: 'photo',
+    filename: 'photo',
     width: '1920',
     height: '1080',
     format: 'jpeg',
-    quality: '82'
+    date: now.toISOString().slice(0, 10).replace(/-/g, ''),
+    counter: '001',
+    ext: 'jpg',
+    project_name: 'my-project',
+    user_initials: 'JL',
+    month: String(now.getMonth() + 1).padStart(2, '0'),
+    year: String(now.getFullYear())
   }
 
+  let mergedValues = $derived({ ...mockValues, ...fieldValues })
+
+  // Compute counter with offset support
+  let displayValues = $derived.by(() => {
+    const vals = { ...mergedValues }
+    if (fieldValues.counter) {
+      const start = parseInt(fieldValues.counter, 10) || 1
+      vals.counter = String(start).padStart(3, '0')
+    }
+    return vals
+  })
+
   let preview = $derived(
-    template.replace(/\{(\w+)\}/g, (match, key) => mockValues[key] ?? match)
+    template
+      .replace(/\{(\w+)\}/g, (match, key) => displayValues[key] ?? match)
+      .replace(/_{2,}/g, '_')
+      .replace(/-{2,}/g, '-')
+      .replace(/^[_-]+/, '')
+      .replace(/[_-]+$/, '')
   )
 
   let tokens = $derived(

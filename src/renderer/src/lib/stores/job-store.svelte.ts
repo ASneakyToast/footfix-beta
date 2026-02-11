@@ -3,7 +3,8 @@ import type {
   ImageResult,
   ProgressUpdate,
   ProcessRequest,
-  ImageFormat
+  ImageFormat,
+  TemplateFieldValues
 } from '../../../../shared/types'
 
 type View = 'process' | 'results' | 'settings'
@@ -14,6 +15,8 @@ let processing = $state(false)
 let progress = $state<ProgressUpdate | null>(null)
 let errors = $state<Array<{ path: string; error: string }>>([])
 let currentView = $state<View>('process')
+let templateFieldValues = $state<TemplateFieldValues>({})
+let activePresetId = $state<string | null>(null)
 
 let progressCleanup: (() => void) | null = null
 
@@ -24,7 +27,9 @@ export function getJobState() {
     get processing() { return processing },
     get progress() { return progress },
     get errors() { return errors },
-    get currentView() { return currentView }
+    get currentView() { return currentView },
+    get templateFieldValues() { return templateFieldValues },
+    get activePresetId() { return activePresetId }
   }
 }
 
@@ -57,6 +62,22 @@ export function clearQueue(): void {
   queue = []
 }
 
+export function setTemplateFieldValue(key: string, value: string): void {
+  templateFieldValues = { ...templateFieldValues, [key]: value }
+}
+
+export function setTemplateFieldValues(values: TemplateFieldValues): void {
+  templateFieldValues = { ...values }
+}
+
+export function resetTemplateFieldValues(): void {
+  templateFieldValues = {}
+}
+
+export function setActivePresetId(id: string | null): void {
+  activePresetId = id
+}
+
 export async function processImages(opts: {
   outputFolder: string
   format: ImageFormat
@@ -64,6 +85,7 @@ export async function processImages(opts: {
   targetFileSize: number
   sizeTolerance: number
   filenameTemplate: string
+  templateFieldValues: TemplateFieldValues
 }): Promise<void> {
   if (queue.length === 0) return
 
