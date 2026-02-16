@@ -65,7 +65,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   outputFolder: '',
   format: 'jpeg',
   maxDimension: 2560,
-  targetFileSize: 1_000_000, // 1MB
+  targetFileSize: 768_000, // ~750KB
   sizeTolerance: 50_000, // 50KB
   filenameTemplate: '{filename}_{width}x{height}',
   userInitials: '',
