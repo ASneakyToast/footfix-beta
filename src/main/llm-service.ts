@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
 import { IPC } from '../shared/ipc-channels'
 import { getSettings } from './settings-store'
-import type { AltTextResult } from '../shared/types'
+import type { AltTextResult, FetchModelsResult, LlmModelInfo } from '../shared/types'
 import { readFileSync } from 'fs'
 import { extname } from 'path'
 
@@ -40,17 +40,10 @@ export function registerAltTextHandlers(): void {
 
       const engine = await getEngine()
 
-      // Build engine config
-      const engineConfig: Record<string, any> = {}
-      engineConfig[settings.llmProvider] = {
+      // Create model directly
+      const model = engine.igniteModel(settings.llmProvider, settings.llmModel, {
         apiKey: settings.llmApiKey
-      }
-
-      const config = { engines: engineConfig }
-
-      // Create engine and model
-      const llm = new engine.default(config)
-      const model = llm.igniteEngine(settings.llmProvider)
+      })
 
       // Read image as base64
       const imageBuffer = readFileSync(imagePath)
@@ -58,15 +51,14 @@ export function registerAltTextHandlers(): void {
       const mimeType = getMimeType(imagePath)
 
       // Build messages
+      const attachment = new engine.Attachment(base64, mimeType)
+      const userMsg = new engine.Message('user', 'Please generate alt text for this image.', attachment)
       const messages = [
         new engine.Message('system', settings.altTextPrompt),
-        new engine.Message('user', [
-          new engine.MessageAttachment(base64, mimeType),
-          new engine.MessageTextContent('Please generate alt text for this image.')
-        ])
+        userMsg
       ]
 
-      const response = await model.complete(settings.llmModel, messages, {
+      const response = await model.complete(messages, {
         temperature: 0.3,
         maxTokens: 300
       })
@@ -76,6 +68,31 @@ export function registerAltTextHandlers(): void {
         altText: response.content.trim(),
         provider: settings.llmProvider,
         model: settings.llmModel
+      }
+    }
+  )
+
+  ipcMain.handle(
+    IPC.ALTTEXT_MODELS,
+    async (_, provider: string, apiKey: string): Promise<FetchModelsResult> => {
+      try {
+        const engine = await getEngine()
+        const config = apiKey ? { apiKey } : {}
+        const modelsList = await engine.loadModels(provider, config)
+
+        const models: LlmModelInfo[] = (modelsList?.chat ?? []).map((m: any) => ({
+          id: typeof m === 'string' ? m : m.id,
+          name: typeof m === 'string' ? m : m.name || m.id,
+          vision: typeof m === 'string' ? false : !!(m.capabilities?.vision)
+        }))
+
+        if (models.length === 0) {
+          return { models, error: 'No models returned. Check your API key and try again.' }
+        }
+
+        return { models }
+      } catch (err) {
+        return { models: [], error: err instanceof Error ? err.message : String(err) }
       }
     }
   )
@@ -90,18 +107,13 @@ export function registerAltTextHandlers(): void {
     try {
       const engine = await getEngine()
 
-      const engineConfig: Record<string, any> = {}
-      engineConfig[settings.llmProvider] = {
+      const model = engine.igniteModel(settings.llmProvider, settings.llmModel, {
         apiKey: settings.llmApiKey
-      }
-
-      const config = { engines: engineConfig }
-      const llm = new engine.default(config)
-      const model = llm.igniteEngine(settings.llmProvider)
+      })
 
       const messages = [new engine.Message('user', 'Reply with "ok" to confirm connection.')]
 
-      const response = await model.complete(settings.llmModel, messages, {
+      const response = await model.complete(messages, {
         temperature: 0,
         maxTokens: 10
       })
