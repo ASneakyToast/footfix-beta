@@ -70,20 +70,19 @@
 </script>
 
 {#snippet saveDialog()}
-  <div class="flex gap-2">
+  <div class="flex gap-2" style="animation: fadeIn var(--transition-fast) ease-out both;">
     <input
       type="text"
       placeholder="Preset name"
       bind:value={saveName}
       onkeydown={(e) => { if (e.key === 'Enter') handleSave() }}
-      class="flex-1 px-3 py-1.5 rounded-lg text-sm border"
-      style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+      class="preset-input flex-1 px-3 py-1.5 rounded-lg text-sm"
     />
     <button
       onclick={handleSave}
       disabled={!saveName.trim()}
-      class="px-3 py-1.5 rounded-lg text-xs font-medium"
-      style="background: var(--color-accent); color: var(--color-text); opacity: {saveName.trim() ? '1' : '0.5'};"
+      class="preset-accent-btn px-3 py-1.5 rounded-lg text-xs font-medium"
+      style="opacity: {saveName.trim() ? '1' : '0.5'};"
     >
       Save
     </button>
@@ -96,8 +95,7 @@
       <select
         value={selectedId}
         onchange={applyPreset}
-        class="flex-1 px-3 py-2 rounded-lg text-sm border"
-        style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+        class="preset-input flex-1 px-3 py-2 rounded-lg text-sm"
         aria-label="Select a preset"
       >
         <option value="">Select a preset...</option>
@@ -110,31 +108,29 @@
     <div class="flex items-center gap-2 flex-wrap">
       <button
         onclick={() => { showSaveDialog = !showSaveDialog }}
-        class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-        style="background: var(--color-surface-alt); color: var(--color-text);"
+        class="preset-accent-btn px-3 py-1.5 rounded-lg text-xs font-medium"
       >
         Save Current
       </button>
       <button
         onclick={handleExport}
         disabled={!selectedId}
-        class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-        style="background: var(--color-surface-alt); color: var(--color-text); opacity: {selectedId ? '1' : '0.5'};"
+        class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium"
+        style="opacity: {selectedId ? '1' : '0.5'};"
       >
         Export
       </button>
       <button
         onclick={importPreset}
-        class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-        style="background: var(--color-surface-alt); color: var(--color-text);"
+        class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium"
       >
         Import
       </button>
       <button
         onclick={handleDelete}
         disabled={!selectedId}
-        class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-        style="color: var(--color-error); opacity: {selectedId ? '1' : '0.5'};"
+        class="preset-delete-btn px-3 py-1.5 rounded-lg text-xs font-medium"
+        style="opacity: {selectedId ? '1' : '0.5'};"
       >
         Delete
       </button>
@@ -152,15 +148,13 @@
     <div class="flex items-center gap-2">
       <button
         onclick={() => { showSaveDialog = !showSaveDialog }}
-        class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-        style="background: var(--color-surface-alt); color: var(--color-text);"
+        class="preset-accent-btn px-3 py-1.5 rounded-lg text-xs font-medium"
       >
         Save Current
       </button>
       <button
         onclick={importPreset}
-        class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-        style="background: var(--color-surface-alt); color: var(--color-text);"
+        class="preset-btn px-3 py-1.5 rounded-lg text-xs font-medium"
       >
         Import
       </button>
@@ -171,3 +165,42 @@
     {/if}
   </div>
 {/if}
+
+<style>
+  .preset-input {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--color-text);
+    box-shadow: var(--shadow-inset);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .preset-input:focus {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-inset), 0 0 0 2px var(--input-focus-ring);
+    outline: none;
+  }
+  .preset-btn {
+    background: var(--color-surface-3);
+    color: var(--color-text);
+    transition: background var(--transition-fast);
+  }
+  .preset-btn:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+  }
+  .preset-accent-btn {
+    background: var(--color-accent);
+    color: var(--color-text);
+    transition: filter var(--transition-fast);
+  }
+  .preset-accent-btn:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+  .preset-delete-btn {
+    background: var(--color-error-muted);
+    color: var(--color-error);
+    transition: filter var(--transition-fast);
+  }
+  .preset-delete-btn:hover:not(:disabled) {
+    filter: brightness(1.2);
+  }
+</style>

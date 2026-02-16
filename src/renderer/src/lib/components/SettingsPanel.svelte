@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { getSettingsState, updateSettings, selectOutputFolder } from '../stores/settings-store.svelte'
+  import { getSettingsState, updateSettings, selectOutputFolder, toggleTheme } from '../stores/settings-store.svelte'
   import type { ImageFormat } from '../../../../../shared/types'
 
   const settingsState = getSettingsState()
 
   let testStatus = $state<'idle' | 'testing' | 'success' | 'error'>('idle')
   let testError = $state('')
+
+  let isDark = $derived(settingsState.settings.theme !== 'light')
 
   function handleFormatChange(e: Event) {
     const value = (e.currentTarget as HTMLSelectElement).value as ImageFormat
@@ -46,9 +48,38 @@
 </script>
 
 <div class="flex flex-col gap-8">
+  <!-- Theme Section -->
+  <section>
+    <h3 class="section-header section-header-teal text-[13px] font-semibold uppercase tracking-widest mb-4" style="color: var(--color-text-muted);">
+      Appearance
+    </h3>
+    <div class="flex items-center gap-4">
+      <button
+        onclick={toggleTheme}
+        class="theme-btn flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium"
+      >
+        {#if isDark}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+          </svg>
+          Switch to Light Mode
+        {:else}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+          Switch to Dark Mode
+        {/if}
+      </button>
+      <span class="text-xs" style="color: var(--color-text-muted);">
+        Currently using {isDark ? 'dark' : 'light'} theme
+      </span>
+    </div>
+  </section>
+
   <!-- Output Section -->
   <section>
-    <h3 class="text-sm font-semibold uppercase tracking-wider mb-4" style="color: var(--color-text-muted);">
+    <h3 class="section-header section-header-purple text-[13px] font-semibold uppercase tracking-widest mb-4" style="color: var(--color-text-muted);">
       Output
     </h3>
     <div class="flex flex-col gap-4">
@@ -61,13 +92,12 @@
             type="text"
             readonly
             value={settingsState.settings.outputFolder || 'No folder selected'}
-            class="flex-1 px-3 py-2 rounded-lg text-sm border"
-            style="background: var(--color-bg); border-color: var(--color-border); color: {settingsState.settings.outputFolder ? 'var(--color-text)' : 'var(--color-text-muted)'};"
+            class="settings-input flex-1 px-3 py-2 rounded-lg text-sm"
+            style="color: {settingsState.settings.outputFolder ? 'var(--color-text)' : 'var(--color-text-muted)'};"
           />
           <button
             onclick={selectOutputFolder}
-            class="px-4 py-2 rounded-lg text-sm font-medium"
-            style="background: var(--color-accent); color: var(--color-text);"
+            class="settings-btn px-4 py-2 rounded-lg text-sm font-medium"
           >
             Browse
           </button>
@@ -81,8 +111,7 @@
           id="format"
           value={settingsState.settings.format}
           onchange={handleFormatChange}
-          class="px-3 py-2 rounded-lg text-sm border"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+          class="settings-input px-3 py-2 rounded-lg text-sm"
         >
           <option value="jpeg">JPEG</option>
           <option value="webp">WebP</option>
@@ -101,8 +130,7 @@
           step="10"
           value={settingsState.settings.maxDimension}
           onchange={handleNumberInput('maxDimension')}
-          class="px-3 py-2 rounded-lg text-sm border"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+          class="settings-input px-3 py-2 rounded-lg text-sm"
         />
         <p class="text-xs" style="color: var(--color-text-muted);">Longest edge will be resized to this value.</p>
       </div>
@@ -117,8 +145,7 @@
           step="10"
           value={Math.round(settingsState.settings.targetFileSize / 1024)}
           onchange={handleNumberInput('targetFileSize', 1024)}
-          class="px-3 py-2 rounded-lg text-sm border"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+          class="settings-input px-3 py-2 rounded-lg text-sm"
         />
       </div>
 
@@ -132,8 +159,7 @@
           step="5"
           value={Math.round(settingsState.settings.sizeTolerance / 1024)}
           onchange={handleNumberInput('sizeTolerance', 1024)}
-          class="px-3 py-2 rounded-lg text-sm border"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+          class="settings-input px-3 py-2 rounded-lg text-sm"
         />
         <p class="text-xs" style="color: var(--color-text-muted);">Acceptable variance from target size.</p>
       </div>
@@ -146,8 +172,7 @@
           type="text"
           value={settingsState.settings.filenameTemplate}
           onchange={handleTextInput('filenameTemplate')}
-          class="px-3 py-2 rounded-lg text-sm border"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+          class="settings-input px-3 py-2 rounded-lg text-sm"
         />
         <p class="text-xs" style="color: var(--color-text-muted);">
           Tokens: {'{filename}'}, {'{width}'}, {'{height}'}, {'{date}'}, {'{counter}'}, {'{format}'}, {'{ext}'}, {'{project_name}'}, {'{user_initials}'}, {'{month}'}, {'{year}'}
@@ -163,8 +188,8 @@
           value={settingsState.settings.userInitials}
           onchange={handleTextInput('userInitials')}
           placeholder="e.g. JL"
-          class="px-3 py-2 rounded-lg text-sm border"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text); max-width: 120px;"
+          class="settings-input px-3 py-2 rounded-lg text-sm"
+          style="max-width: 120px;"
         />
         <p class="text-xs" style="color: var(--color-text-muted);">Used as default for the {'{user_initials}'} template token.</p>
       </div>
@@ -173,7 +198,7 @@
 
   <!-- LLM Section -->
   <section>
-    <h3 class="text-sm font-semibold uppercase tracking-wider mb-4" style="color: var(--color-text-muted);">
+    <h3 class="section-header section-header-teal text-[13px] font-semibold uppercase tracking-widest mb-4" style="color: var(--color-text-muted);">
       LLM — Alt Text Generation
     </h3>
     <div class="flex flex-col gap-4">
@@ -184,8 +209,7 @@
           id="llm-provider"
           value={settingsState.settings.llmProvider}
           onchange={(e) => updateSettings({ llmProvider: (e.currentTarget as HTMLSelectElement).value })}
-          class="px-3 py-2 rounded-lg text-sm border"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+          class="settings-input px-3 py-2 rounded-lg text-sm"
         >
           <option value="openai">OpenAI</option>
           <option value="anthropic">Anthropic</option>
@@ -201,8 +225,7 @@
           type="text"
           value={settingsState.settings.llmModel}
           onchange={handleTextInput('llmModel')}
-          class="px-3 py-2 rounded-lg text-sm border"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+          class="settings-input px-3 py-2 rounded-lg text-sm"
         />
       </div>
 
@@ -215,8 +238,7 @@
           value={settingsState.settings.llmApiKey}
           onchange={handleTextInput('llmApiKey')}
           placeholder="Enter your API key"
-          class="px-3 py-2 rounded-lg text-sm border"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+          class="settings-input px-3 py-2 rounded-lg text-sm"
         />
         <p class="text-xs" style="color: var(--color-text-muted);">Encrypted at rest via Electron safeStorage.</p>
       </div>
@@ -229,8 +251,7 @@
           rows="3"
           value={settingsState.settings.altTextPrompt}
           onchange={handleTextInput('altTextPrompt')}
-          class="px-3 py-2 rounded-lg text-sm border resize-y"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+          class="settings-input px-3 py-2 rounded-lg text-sm resize-y"
         ></textarea>
       </div>
 
@@ -239,8 +260,8 @@
         <button
           onclick={testConnection}
           disabled={testStatus === 'testing' || !settingsState.settings.llmApiKey}
-          class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-          style="background: var(--color-surface-alt); color: var(--color-text); opacity: {testStatus === 'testing' || !settingsState.settings.llmApiKey ? '0.5' : '1'};"
+          class="test-btn px-4 py-2 rounded-lg text-sm font-medium"
+          style="opacity: {testStatus === 'testing' || !settingsState.settings.llmApiKey ? '0.5' : '1'};"
         >
           {testStatus === 'testing' ? 'Testing...' : 'Test Connection'}
         </button>
@@ -254,3 +275,51 @@
     </div>
   </section>
 </div>
+
+<style>
+  .section-header {
+    padding-left: 10px;
+  }
+  .section-header-purple {
+    border-left: 3px solid var(--color-accent);
+  }
+  .section-header-teal {
+    border-left: 3px solid var(--color-accent-2);
+  }
+  .settings-input {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--color-text);
+    box-shadow: var(--shadow-inset);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .settings-input:focus {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-inset), 0 0 0 2px var(--input-focus-ring);
+    outline: none;
+  }
+  .settings-btn {
+    background: var(--color-accent);
+    color: var(--color-text);
+    transition: filter var(--transition-fast);
+  }
+  .settings-btn:hover {
+    filter: brightness(1.1);
+  }
+  .test-btn {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    transition: background var(--transition-fast);
+  }
+  .test-btn:hover:not(:disabled) {
+    background: var(--color-surface-hover);
+  }
+  .theme-btn {
+    background: var(--color-surface-2);
+    color: var(--color-text);
+    transition: background var(--transition-fast);
+  }
+  .theme-btn:hover {
+    background: var(--color-surface-hover);
+  }
+</style>

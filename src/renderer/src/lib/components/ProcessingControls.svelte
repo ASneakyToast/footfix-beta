@@ -46,14 +46,14 @@
 
 <div class="flex flex-col gap-4">
   <!-- Preset Selector -->
-  <div class="rounded-lg p-4" style="background: var(--color-surface);">
-    <h3 class="text-sm font-medium mb-3" style="color: var(--color-text-muted);">Presets</h3>
+  <div class="rounded-lg p-5 surface-1" style="box-shadow: var(--shadow-sm); border-radius: var(--radius-lg);">
+    <h3 class="text-[13px] font-semibold uppercase tracking-widest mb-3" style="color: var(--color-text-muted);">Presets</h3>
     <PresetSelector />
   </div>
 
   <!-- Filename Template -->
-  <div class="rounded-lg p-4" style="background: var(--color-surface);">
-    <h3 class="text-sm font-medium mb-3" style="color: var(--color-text-muted);">
+  <div class="rounded-lg p-5 surface-1" style="box-shadow: var(--shadow-sm); border-radius: var(--radius-lg);">
+    <h3 class="text-[13px] font-semibold uppercase tracking-widest mb-3" style="color: var(--color-text-muted);">
       Filename Template
     </h3>
     <TemplateFieldEditor
@@ -68,19 +68,18 @@
   </div>
 
   <!-- Output Folder -->
-  <div class="rounded-lg p-4" style="background: var(--color-surface);">
-    <h3 class="text-sm font-medium mb-2" style="color: var(--color-text-muted);">Output Folder</h3>
+  <div class="rounded-lg p-5 surface-1" style="box-shadow: var(--shadow-sm); border-radius: var(--radius-lg);">
+    <h3 class="text-[13px] font-semibold uppercase tracking-widest mb-2" style="color: var(--color-text-muted);">Output Folder</h3>
     <div class="flex items-center gap-2">
       <span
         class="flex-1 px-3 py-2 rounded-lg text-sm truncate"
-        style="background: var(--color-bg); color: {settings.settings.outputFolder ? 'var(--color-text)' : 'var(--color-text-muted)'};"
+        style="background: var(--input-bg); box-shadow: var(--shadow-inset); color: {settings.settings.outputFolder ? 'var(--color-text)' : 'var(--color-text-muted)'};"
       >
         {settings.settings.outputFolder || 'No folder selected'}
       </span>
       <button
         onclick={selectOutputFolder}
-        class="px-4 py-2 rounded-lg text-sm font-medium shrink-0"
-        style="background: var(--color-accent); color: var(--color-text);"
+        class="browse-btn px-4 py-2 rounded-lg text-sm font-medium shrink-0"
       >
         Browse
       </button>
@@ -92,8 +91,8 @@
     <button
       onclick={handleStart}
       disabled={!canStart}
-      class="px-6 py-2.5 rounded-lg text-sm font-medium transition-colors"
-      style="background: var(--color-accent); color: var(--color-text); opacity: {canStart ? '1' : '0.5'};"
+      class="start-btn px-8 py-3 rounded-lg text-base font-medium"
+      style="opacity: {canStart ? '1' : '0.5'};"
     >
       {job.processing ? 'Processing...' : 'Start Processing'}
     </button>
@@ -101,11 +100,39 @@
     {#if job.processing}
       <button
         onclick={cancelProcessing}
-        class="px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
-        style="background: var(--color-surface-alt); color: var(--color-error);"
+        class="cancel-btn px-4 py-3 rounded-lg text-sm font-medium"
       >
         Cancel
       </button>
     {/if}
   </div>
 </div>
+
+<style>
+  .start-btn {
+    background: var(--color-accent-gradient);
+    color: var(--color-text);
+    box-shadow: var(--shadow-accent);
+    transition: filter var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .start-btn:hover:not(:disabled) {
+    filter: brightness(1.1);
+    box-shadow: var(--shadow-accent), var(--glow-accent);
+  }
+  .browse-btn {
+    background: var(--color-accent-2);
+    color: #09090b;
+    transition: filter var(--transition-fast);
+  }
+  .browse-btn:hover {
+    filter: brightness(1.1);
+  }
+  .cancel-btn {
+    background: var(--color-surface-2);
+    color: var(--color-error);
+    transition: background var(--transition-fast);
+  }
+  .cancel-btn:hover {
+    background: var(--color-surface-hover);
+  }
+</style>

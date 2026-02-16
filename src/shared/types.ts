@@ -1,4 +1,5 @@
 export type ImageFormat = 'jpeg' | 'webp' | 'png'
+export type Theme = 'dark' | 'light'
 
 // --- Token Registry ---
 
@@ -57,6 +58,7 @@ export interface AppSettings {
   llmModel: string
   llmApiKey: string // encrypted at rest
   altTextPrompt: string
+  theme: Theme
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -71,7 +73,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
   llmModel: 'gpt-4o',
   llmApiKey: '',
   altTextPrompt:
-    'Describe this image for use as alt text on a webpage. Be concise (1-2 sentences), descriptive, and focus on the key visual content. Do not start with "Image of" or "Photo of".'
+    'Describe this image for use as alt text on a webpage. Be concise (1-2 sentences), descriptive, and focus on the key visual content. Do not start with "Image of" or "Photo of".',
+  theme: 'dark' as Theme
 }
 
 export interface Preset {

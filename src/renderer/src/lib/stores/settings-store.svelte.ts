@@ -1,4 +1,4 @@
-import type { AppSettings } from '../../../../shared/types'
+import type { AppSettings, Theme } from '../../../../shared/types'
 import { DEFAULT_SETTINGS } from '../../../../shared/types'
 
 let settings = $state<AppSettings>({ ...DEFAULT_SETTINGS })
@@ -11,13 +11,26 @@ export function getSettingsState() {
   }
 }
 
+export function applyTheme(theme: Theme): void {
+  document.documentElement.setAttribute('data-theme', theme)
+}
+
 export async function loadSettings(): Promise<void> {
   settings = await window.api.getSettings()
+  applyTheme(settings.theme ?? 'dark')
   loaded = true
 }
 
 export async function updateSettings(partial: Partial<AppSettings>): Promise<void> {
   settings = await window.api.updateSettings(partial)
+  if (partial.theme) {
+    applyTheme(partial.theme)
+  }
+}
+
+export async function toggleTheme(): Promise<void> {
+  const next: Theme = settings.theme === 'dark' ? 'light' : 'dark'
+  await updateSettings({ theme: next })
 }
 
 export async function selectOutputFolder(): Promise<string | null> {

@@ -56,7 +56,7 @@
         onclick={copyToClipboard}
         disabled={!editText}
         class="px-2.5 py-1 rounded text-xs font-medium transition-colors"
-        style="background: var(--color-surface); color: var(--color-text); opacity: {editText ? '1' : '0.5'};"
+        style="background: var(--color-surface-1); color: {copied ? 'var(--color-accent-2)' : 'var(--color-text)'}; opacity: {editText ? '1' : '0.5'};"
         aria-label="Copy alt text to clipboard"
       >
         {copied ? 'Copied!' : 'Copy'}
@@ -69,11 +69,24 @@
     value={editText}
     onchange={handleEdit}
     placeholder="Click Generate or type alt text manually"
-    class="w-full px-3 py-2 rounded-lg text-xs border resize-y"
-    style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+    class="alt-textarea w-full px-3 py-2 rounded-lg text-xs border resize-y"
   ></textarea>
 
   {#if error}
     <p class="text-xs" style="color: var(--color-error);">{error}</p>
   {/if}
 </div>
+
+<style>
+  .alt-textarea {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--color-text);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .alt-textarea:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--input-focus-ring);
+    outline: none;
+  }
+</style>

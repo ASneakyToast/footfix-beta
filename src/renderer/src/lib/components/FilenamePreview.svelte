@@ -58,14 +58,14 @@
       {#if token.isToken}
         <span
           class="px-1 rounded text-xs font-mono"
-          style="background: var(--color-accent); color: var(--color-text);"
+          style="background: var(--color-accent-muted); color: var(--color-accent);"
         >{token.text}</span>
       {:else}
         <span class="text-xs font-mono" style="color: var(--color-text);">{token.text}</span>
       {/if}
     {/each}
   </div>
-  <p class="text-xs font-mono" style="color: var(--color-text-muted);">
+  <p class="text-xs font-mono" style="color: var(--color-accent-2);">
     → {preview}
   </p>
 </div>

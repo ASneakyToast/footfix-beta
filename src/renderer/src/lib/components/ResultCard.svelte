@@ -11,7 +11,6 @@
   let thumbnailSrc = $state('')
 
   $effect(() => {
-    // Load thumbnail from the processed output file
     const path = result.outputPath
     window.api.getPreview(path).then((src) => {
       thumbnailSrc = src
@@ -21,10 +20,7 @@
   })
 </script>
 
-<div
-  class="rounded-lg overflow-hidden"
-  style="background: var(--color-surface-alt);"
->
+<div class="result-card rounded-lg overflow-hidden" class:expanded>
   <button
     onclick={ontoggle}
     class="w-full text-left px-4 py-3 flex items-center gap-4"
@@ -34,7 +30,7 @@
     <!-- Thumbnail -->
     <div
       class="shrink-0 rounded overflow-hidden flex items-center justify-center"
-      style="width: 44px; height: 44px; background: var(--color-bg);"
+      style="width: 52px; height: 52px; background: var(--color-bg); border-radius: var(--radius-sm);"
     >
       {#if thumbnailSrc}
         <img
@@ -53,10 +49,7 @@
         {result.filename}
       </p>
       <div class="flex items-center gap-2 mt-1">
-        <span
-          class="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase"
-          style="background: var(--color-accent); color: var(--color-text);"
-        >
+        <span class="format-badge px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase">
           {result.format}
         </span>
         {#if result.quality !== null}
@@ -72,19 +65,21 @@
       <p class="text-xs" style="color: var(--color-text-muted);">
         {formatFileSize(result.originalSize)} → {formatFileSize(result.outputSize)}
       </p>
-      <p class="text-xs font-medium" style="color: var(--color-success);">
+      <p class="text-xs font-medium" style="color: var(--color-accent-2);">
         -{compressionRatio(result.originalSize, result.outputSize)} saved
       </p>
     </div>
 
-    <!-- Expand indicator -->
-    <span class="text-xs shrink-0" style="color: var(--color-text-muted);">
-      {expanded ? '▲' : '▼'}
+    <!-- Expand indicator (chevron with rotation) -->
+    <span class="chevron shrink-0" class:open={expanded} style="color: var(--color-text-muted);">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
     </span>
   </button>
 
   {#if expanded}
-    <div class="px-4 pb-3 border-t" style="border-color: var(--color-border);">
+    <div class="px-4 pb-3" style="background: var(--color-surface-3); border-top: 1px solid var(--color-border); animation: fadeIn var(--transition-fast) ease-out both;">
       <div class="flex gap-4 mt-3">
         <!-- Larger preview -->
         {#if thumbnailSrc}
@@ -119,3 +114,29 @@
     </div>
   {/if}
 </div>
+
+<style>
+  .result-card {
+    background: var(--color-surface-2);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .result-card:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+  }
+  .result-card.expanded {
+    box-shadow: var(--shadow-md);
+  }
+  .format-badge {
+    background: var(--color-accent-2-muted);
+    color: var(--color-accent-2);
+  }
+  .chevron {
+    transition: transform var(--transition-fast);
+    display: flex;
+    align-items: center;
+  }
+  .chevron.open {
+    transform: rotate(180deg);
+  }
+</style>

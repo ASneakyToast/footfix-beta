@@ -84,8 +84,7 @@
             value={fieldValues[token.key] ?? ''}
             placeholder={getFieldPlaceholder(token)}
             oninput={(e) => handleFieldInput(token.key, e)}
-            class="flex-1 px-2 py-1 rounded text-sm border font-mono"
-            style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+            class="field-input flex-1 px-2 py-1 rounded text-sm border font-mono"
           />
         </div>
       {/each}
@@ -100,7 +99,7 @@
         {#each perFileTokens as token (token.key)}
           <span
             class="px-1.5 py-0.5 rounded text-xs font-mono"
-            style="background: var(--color-surface-alt); color: var(--color-text-muted);"
+            style="background: var(--color-accent-2-muted); color: var(--color-accent-2);"
           >{`{${token.key}}`}</span>
         {/each}
       </div>
@@ -126,15 +125,14 @@
           type="text"
           value={template}
           onchange={handleTemplateInput}
-          class="w-full px-3 py-2 rounded-lg text-sm border font-mono"
-          style="background: var(--color-bg); border-color: var(--color-border); color: var(--color-text);"
+          class="field-input w-full px-3 py-2 rounded-lg text-sm border font-mono"
         />
         <div class="flex items-center gap-1.5 flex-wrap">
           <span class="text-xs" style="color: var(--color-text-muted);">Available:</span>
           {#each allTokens as token}
             <span
               class="px-1.5 py-0.5 rounded text-xs font-mono"
-              style="background: var(--color-surface-alt); color: var(--color-text-muted);"
+              style="background: var(--color-accent-muted); color: var(--color-accent);"
             >{token}</span>
           {/each}
         </div>
@@ -142,3 +140,17 @@
     {/if}
   {/if}
 </div>
+
+<style>
+  .field-input {
+    background: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--color-text);
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .field-input:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 2px var(--input-focus-ring);
+    outline: none;
+  }
+</style>
