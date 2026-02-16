@@ -21,9 +21,9 @@
     }
   })
 
-  function handleStart() {
+  async function handleStart() {
     const s = settings.settings
-    processImages({
+    await processImages({
       outputFolder: s.outputFolder,
       format: s.format,
       maxDimension: s.maxDimension,

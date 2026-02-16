@@ -101,7 +101,8 @@ export async function processImages(opts: {
 
   const request: ProcessRequest = {
     filePaths: queue.map((q) => q.path),
-    ...opts
+    ...opts,
+    templateFieldValues: { ...opts.templateFieldValues }
   }
 
   try {
@@ -111,6 +112,9 @@ export async function processImages(opts: {
     if (results.length > 0) {
       currentView = 'results'
     }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    errors = [{ path: '', error: msg }]
   } finally {
     processing = false
     progress = null
