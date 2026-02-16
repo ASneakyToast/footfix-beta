@@ -6,7 +6,8 @@ import type {
   ProcessRequest,
   ProcessResult,
   ProgressUpdate,
-  AltTextResult
+  AltTextResult,
+  FetchModelsResult
 } from '../shared/types'
 
 const api = {
@@ -31,6 +32,8 @@ const api = {
     ipcRenderer.invoke(IPC.ALTTEXT_GENERATE, imagePath),
   testLlmConnection: (): Promise<{ success: boolean; error?: string }> =>
     ipcRenderer.invoke(IPC.ALTTEXT_TEST),
+  fetchLlmModels: (provider: string, apiKey: string): Promise<FetchModelsResult> =>
+    ipcRenderer.invoke(IPC.ALTTEXT_MODELS, provider, apiKey),
 
   // Presets
   listPresets: (): Promise<Preset[]> => ipcRenderer.invoke(IPC.PRESETS_LIST),

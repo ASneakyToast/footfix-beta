@@ -8,6 +8,7 @@ export const IPC = {
   // Alt text
   ALTTEXT_GENERATE: 'alttext:generate',
   ALTTEXT_TEST: 'alttext:test',
+  ALTTEXT_MODELS: 'alttext:models',
 
   // Presets
   PRESETS_LIST: 'presets:list',

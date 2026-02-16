@@ -142,3 +142,16 @@ export interface QueueItem {
   size: number
   thumbnail?: string
 }
+
+// --- LLM Models ---
+
+export interface LlmModelInfo {
+  id: string
+  name: string
+  vision: boolean
+}
+
+export interface FetchModelsResult {
+  models: LlmModelInfo[]
+  error?: string
+}
