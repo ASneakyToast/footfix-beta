@@ -38,6 +38,10 @@ export function registerAltTextHandlers(): void {
         throw new Error('No API key configured. Please set one in Settings.')
       }
 
+      if (!settings.llmModel?.trim()) {
+        throw new Error('No model selected. Please choose a model in Settings.')
+      }
+
       const engine = await getEngine()
 
       // Create model directly

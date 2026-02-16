@@ -12,7 +12,10 @@
     "package": "electron-vite build && electron-builder",
     "package:mac": "electron-vite build && electron-builder --mac",
     "package:win": "electron-vite build && electron-builder --win",
-    "package:dir": "electron-vite build && electron-builder --dir"
+    "package:dir": "electron-vite build && electron-builder --dir",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "vitest run tests/integration"
   },
   "dependencies": {
     "electron-store": "^10.0.0",
@@ -24,11 +27,14 @@
     "@electron-toolkit/utils": "^3.0.0",
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@tailwindcss/vite": "^4.0.6",
+    "dotenv": "^17.3.1",
     "electron": "^33.3.1",
     "electron-builder": "^25.1.8",
     "electron-vite": "^3.0.0",
+    "jsdom": "^28.1.0",
     "svelte": "^5.19.0",
     "tailwindcss": "^4.0.6",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^4.0.18"
   }
 }

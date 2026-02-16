@@ -3,4 +3,6 @@ out/
 dist/
 *.log
 .env
+.env.test
 nul
+coverage/
