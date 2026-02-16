@@ -16,6 +16,18 @@ async function getEngine(): Promise<any> {
   return LlmEngine
 }
 
+function buildChatModel(modelId: string): {
+  id: string
+  name: string
+  capabilities: { tools: boolean; vision: boolean; reasoning: boolean; caching: boolean }
+} {
+  return {
+    id: modelId,
+    name: modelId,
+    capabilities: { tools: false, vision: true, reasoning: false, caching: false }
+  }
+}
+
 function getMimeType(filePath: string): string {
   const ext = extname(filePath).toLowerCase()
   const mimes: Record<string, string> = {
@@ -44,8 +56,8 @@ export function registerAltTextHandlers(): void {
 
       const engine = await getEngine()
 
-      // Create model directly
-      const model = engine.igniteModel(settings.llmProvider, settings.llmModel, {
+      // Create model with explicit capabilities to bypass multi-llm-ts registry lookup
+      const model = engine.igniteModel(settings.llmProvider, buildChatModel(settings.llmModel), {
         apiKey: settings.llmApiKey
       })
 
@@ -108,10 +120,14 @@ export function registerAltTextHandlers(): void {
       return { success: false, error: 'No API key configured.' }
     }
 
+    if (!settings.llmModel?.trim()) {
+      return { success: false, error: 'No model selected. Please choose a model in Settings.' }
+    }
+
     try {
       const engine = await getEngine()
 
-      const model = engine.igniteModel(settings.llmProvider, settings.llmModel, {
+      const model = engine.igniteModel(settings.llmProvider, buildChatModel(settings.llmModel), {
         apiKey: settings.llmApiKey
       })
 

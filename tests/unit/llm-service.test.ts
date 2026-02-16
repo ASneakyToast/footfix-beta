@@ -68,6 +68,23 @@ describe('llm-service IPC handlers', () => {
       await expect(handler({}, '/test/image.jpg')).rejects.toThrow('No model selected')
     })
 
+    it('passes ChatModel object with vision capability to igniteModel', async () => {
+      mockComplete.mockResolvedValueOnce({ content: 'Alt text' })
+
+      const handler = handlers['alttext:generate']
+      await handler({}, '/test/image.jpg')
+
+      const { igniteModel } = await import('multi-llm-ts')
+      expect(vi.mocked(igniteModel)).toHaveBeenCalledWith(
+        'openai',
+        expect.objectContaining({
+          id: 'gpt-4o',
+          capabilities: expect.objectContaining({ vision: true })
+        }),
+        expect.any(Object)
+      )
+    })
+
     it('returns AltTextResult with valid config', async () => {
       mockComplete.mockResolvedValueOnce({ content: '  A photo of a cat  ' })
 
@@ -127,6 +144,16 @@ describe('llm-service IPC handlers', () => {
       const result = await handler({})
 
       expect(result).toEqual({ success: false, error: 'No API key configured.' })
+    })
+
+    it('returns failure when no model selected', async () => {
+      const { getSettings } = await import('../../src/main/settings-store')
+      vi.mocked(getSettings).mockResolvedValueOnce({ ...mockSettings, llmModel: '' } as AppSettings)
+
+      const handler = handlers['alttext:test']
+      const result = await handler({})
+
+      expect(result).toEqual({ success: false, error: 'No model selected. Please choose a model in Settings.' })
     })
 
     it('returns success with valid config', async () => {
