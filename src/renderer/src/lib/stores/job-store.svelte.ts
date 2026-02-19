@@ -117,11 +117,13 @@ export async function processImages(opts: {
     errors = [{ path: '', error: msg }]
   } finally {
     processing = false
-    progress = null
     if (progressCleanup) {
       progressCleanup()
       progressCleanup = null
     }
+    setTimeout(() => {
+      progress = null
+    }, 800)
   }
 }
 
