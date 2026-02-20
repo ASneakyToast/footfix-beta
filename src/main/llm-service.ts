@@ -2,7 +2,7 @@ import { ipcMain } from 'electron'
 import { IPC } from '../shared/ipc-channels'
 import { getSettings } from './settings-store'
 import type { AltTextResult, FetchModelsResult, LlmModelInfo } from '../shared/types'
-import { readFileSync } from 'fs'
+import sharp from 'sharp'
 import { extname } from 'path'
 
 // Dynamic import for multi-llm-ts since it's ESM
@@ -61,10 +61,14 @@ export function registerAltTextHandlers(): void {
         apiKey: settings.llmApiKey
       })
 
-      // Read image as base64
-      const imageBuffer = readFileSync(imagePath)
+      // Resize image to fit within API limits (5 MB max for base64)
+      const MAX_DIMENSION = 1536
+      const imageBuffer = await sharp(imagePath)
+        .resize({ width: MAX_DIMENSION, height: MAX_DIMENSION, fit: 'inside', withoutEnlargement: true })
+        .jpeg({ quality: 80 })
+        .toBuffer()
       const base64 = imageBuffer.toString('base64')
-      const mimeType = getMimeType(imagePath)
+      const mimeType = 'image/jpeg'
 
       // Build messages
       const attachment = new engine.Attachment(base64, mimeType)
