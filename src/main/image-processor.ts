@@ -1,7 +1,7 @@
 import { ipcMain, BrowserWindow } from 'electron'
 import sharp from 'sharp'
 import { join } from 'path'
-import { statSync, mkdirSync } from 'fs'
+import { stat, mkdir } from 'fs/promises'
 import { IPC } from '../shared/ipc-channels'
 import { renderFilename } from './filename-template'
 import type {
@@ -11,6 +11,17 @@ import type {
   ProgressUpdate,
   ImageFormat
 } from '../shared/types'
+
+const SHARP_TIMEOUT_MS = 30_000
+
+function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`Sharp operation timed out after 30s: ${label}`)), SHARP_TIMEOUT_MS)
+    )
+  ])
+}
 
 let cancelFlag = false
 
@@ -34,10 +45,10 @@ async function processImage(
 
   // Read metadata
   const image = sharp(filePath)
-  const metadata = await image.metadata()
+  const metadata = await withTimeout(image.metadata(), `metadata for ${filename}`)
   const originalWidth = metadata.width || 0
   const originalHeight = metadata.height || 0
-  const originalSize = statSync(filePath).size
+  const originalSize = (await stat(filePath)).size
 
   // Resize (fit inside max dimension, no enlargement)
   let pipeline = sharp(filePath).resize({
@@ -53,7 +64,7 @@ async function processImage(
   if (opts.format === 'png') {
     // PNG: lossless, no quality binary search
     sendProgress(win, { index, total: opts.filePaths.length, filename, phase: 'optimizing' })
-    outputBuffer = await pipeline.png({ compressionLevel: 6 }).toBuffer()
+    outputBuffer = await withTimeout(pipeline.png({ compressionLevel: 6 }).toBuffer(), `png compress ${filename}`)
   } else {
     // JPEG/WebP: binary search on quality to hit target size
     sendProgress(win, { index, total: opts.filePaths.length, filename, phase: 'optimizing' })
@@ -68,15 +79,20 @@ async function processImage(
       const mid = Math.round((lo + hi) / 2)
       const formatOpts = opts.format === 'jpeg' ? { mozjpeg: true } : {}
 
-      const buf = await sharp(filePath)
-        .resize({
-          width: opts.maxDimension,
-          height: opts.maxDimension,
-          fit: 'inside',
-          withoutEnlargement: true
-        })
-        [opts.format]({ quality: mid, ...formatOpts })
-        .toBuffer()
+      sendProgress(win, { index, total: opts.filePaths.length, filename, phase: 'optimizing' })
+
+      const buf = await withTimeout(
+        sharp(filePath)
+          .resize({
+            width: opts.maxDimension,
+            height: opts.maxDimension,
+            fit: 'inside',
+            withoutEnlargement: true
+          })
+          [opts.format]({ quality: mid, ...formatOpts })
+          .toBuffer(),
+        `quality search q=${mid} for ${filename}`
+      )
 
       bestBuffer = buf
       bestQuality = mid
@@ -98,7 +114,7 @@ async function processImage(
   }
 
   // Get output dimensions
-  const outputMeta = await sharp(outputBuffer).metadata()
+  const outputMeta = await withTimeout(sharp(outputBuffer).metadata(), `output metadata for ${filename}`)
   const outputWidth = outputMeta.width || 0
   const outputHeight = outputMeta.height || 0
 
@@ -112,14 +128,11 @@ async function processImage(
     fieldValues: opts.templateFieldValues || {}
   })
 
-  // Ensure output folder exists
-  mkdirSync(opts.outputFolder, { recursive: true })
-
   const outputPath = join(opts.outputFolder, outputFilename)
 
   sendProgress(win, { index, total: opts.filePaths.length, filename, phase: 'writing' })
 
-  await sharp(outputBuffer).toFile(outputPath)
+  await withTimeout(sharp(outputBuffer).toFile(outputPath), `write ${filename}`)
 
   sendProgress(win, { index, total: opts.filePaths.length, filename, phase: 'complete' })
 
@@ -143,6 +156,8 @@ export function registerImageHandlers(mainWindow: BrowserWindow): void {
     cancelFlag = false
     const results: ImageResult[] = []
     const errors: Array<{ path: string; error: string }> = []
+
+    await mkdir(request.outputFolder, { recursive: true })
 
     for (let i = 0; i < request.filePaths.length; i++) {
       if (cancelFlag) break

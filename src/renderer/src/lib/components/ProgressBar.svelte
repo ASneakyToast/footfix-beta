@@ -4,7 +4,13 @@
   const { progress } = $props<{ progress: ProgressUpdate | null }>()
 
   let percent = $derived(
-    progress ? Math.round((progress.index / progress.total) * 100) : 0
+    progress
+      ? Math.round(
+          ((progress.phase === 'complete' || progress.phase === 'error'
+            ? progress.index + 1
+            : progress.index) / progress.total) * 100
+        )
+      : 0
   )
 
   let isComplete = $derived(progress?.phase === 'complete')
@@ -25,7 +31,7 @@
         {progress.filename} — {phaseLabels[progress.phase] ?? progress.phase}
       </span>
       <span style="color: var(--color-text-muted);">
-        {progress.index}/{progress.total}
+        {Math.min(progress.index + 1, progress.total)}/{progress.total}
       </span>
     </div>
     <div
