@@ -20,6 +20,10 @@ let activePresetId = $state<string | null>(null)
 
 let progressCleanup: (() => void) | null = null
 
+// Batch alt text generation state
+let altTextProgress = $state({ current: 0, total: 0, generating: false })
+let altTextCancelled = false
+
 export function getJobState() {
   return {
     get queue() { return queue },
@@ -29,7 +33,8 @@ export function getJobState() {
     get errors() { return errors },
     get currentView() { return currentView },
     get templateFieldValues() { return templateFieldValues },
-    get activePresetId() { return activePresetId }
+    get activePresetId() { return activePresetId },
+    get altTextProgress() { return altTextProgress }
   }
 }
 
@@ -129,6 +134,48 @@ export async function processImages(opts: {
 
 export async function cancelProcessing(): Promise<void> {
   await window.api.cancelProcessing()
+}
+
+export async function generateAllAltText(): Promise<void> {
+  const needingAltText = results.filter((r) => !r.altText)
+  if (needingAltText.length === 0) return
+
+  altTextCancelled = false
+  altTextProgress = { current: 0, total: needingAltText.length, generating: true }
+
+  for (const result of needingAltText) {
+    if (altTextCancelled) break
+    altTextProgress = { ...altTextProgress, current: altTextProgress.current + 1 }
+    try {
+      const altText = await window.api.generateAltText(result.inputPath)
+      if (altText) {
+        updateResultAltText(result.inputPath, altText)
+      }
+    } catch {
+      // Skip failures and continue with next image
+    }
+  }
+
+  altTextProgress = { current: 0, total: 0, generating: false }
+}
+
+export function cancelAltTextGeneration(): void {
+  altTextCancelled = true
+}
+
+export async function copyAllAltText(): Promise<number> {
+  const withAltText = results.filter((r) => r.altText)
+  if (withAltText.length === 0) return 0
+
+  const text = withAltText
+    .map((r) => {
+      const filename = r.outputPath.split('/').pop() ?? r.outputPath
+      return `${filename}\t${r.altText}`
+    })
+    .join('\n')
+
+  await navigator.clipboard.writeText(text)
+  return withAltText.length
 }
 
 export function updateResultAltText(imagePath: string, altText: string): void {
