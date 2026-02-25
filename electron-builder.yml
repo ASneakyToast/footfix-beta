@@ -13,6 +13,7 @@ asarUnpack:
   - resources/**
   - node_modules/sharp/**
 mac:
+  identity: null
   target:
     - dmg
     - zip
