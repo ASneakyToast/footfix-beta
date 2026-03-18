@@ -35,9 +35,13 @@ vi.mock('multi-llm-ts', () => ({
   }
 }))
 
-// Mock fs
-vi.mock('fs', () => ({
-  readFileSync: vi.fn(() => Buffer.from('fake-image-data'))
+// Mock sharp (llm-service uses sharp to resize images before sending to API)
+vi.mock('sharp', () => ({
+  default: vi.fn(() => ({
+    resize: vi.fn().mockReturnThis(),
+    jpeg: vi.fn().mockReturnThis(),
+    toBuffer: vi.fn().mockResolvedValue(Buffer.from('fake-jpeg-data'))
+  }))
 }))
 
 // Import AFTER mocks are set up
