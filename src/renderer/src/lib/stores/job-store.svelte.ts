@@ -147,9 +147,9 @@ export async function generateAllAltText(): Promise<void> {
     if (altTextCancelled) break
     altTextProgress = { ...altTextProgress, current: altTextProgress.current + 1 }
     try {
-      const altText = await window.api.generateAltText(result.inputPath)
-      if (altText) {
-        updateResultAltText(result.inputPath, altText)
+      const res = await window.api.generateAltText(result.inputPath)
+      if (res?.altText) {
+        updateResultAltText(result.inputPath, res.altText)
       }
     } catch {
       // Skip failures and continue with next image
