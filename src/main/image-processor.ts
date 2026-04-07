@@ -1,8 +1,22 @@
 import { ipcMain, BrowserWindow } from 'electron'
 import sharp from 'sharp'
-import { join } from 'path'
-import { stat, mkdir } from 'fs/promises'
+import { join, extname } from 'path'
+import { stat, mkdir, readFile } from 'fs/promises'
 import { IPC } from '../shared/ipc-channels'
+import heicConvert from 'heic-convert'
+
+function isHeic(filePath: string): boolean {
+  const ext = extname(filePath).toLowerCase()
+  return ext === '.heic' || ext === '.heif'
+}
+
+async function toSharpInput(filePath: string): Promise<Buffer | string> {
+  if (!isHeic(filePath)) return filePath
+  const inputBuffer = await readFile(filePath)
+  return Buffer.from(
+    await heicConvert({ buffer: inputBuffer, format: 'JPEG', quality: 1 })
+  )
+}
 import { renderFilename } from './filename-template'
 import type {
   ProcessRequest,
@@ -43,15 +57,17 @@ async function processImage(
 
   sendProgress(win, { index, total: opts.filePaths.length, filename, phase: 'resizing' })
 
+  const sharpInput = await toSharpInput(filePath)
+
   // Read metadata
-  const image = sharp(filePath)
+  const image = sharp(sharpInput)
   const metadata = await withTimeout(image.metadata(), `metadata for ${filename}`)
   const originalWidth = metadata.width || 0
   const originalHeight = metadata.height || 0
   const originalSize = (await stat(filePath)).size
 
   // Resize (fit inside max dimension, no enlargement)
-  let pipeline = sharp(filePath).resize({
+  let pipeline = sharp(sharpInput).resize({
     width: opts.maxDimension,
     height: opts.maxDimension,
     fit: 'inside',
@@ -82,7 +98,7 @@ async function processImage(
       sendProgress(win, { index, total: opts.filePaths.length, filename, phase: 'optimizing' })
 
       const buf = await withTimeout(
-        sharp(filePath)
+        sharp(sharpInput)
           .resize({
             width: opts.maxDimension,
             height: opts.maxDimension,
@@ -189,7 +205,7 @@ export function registerImageHandlers(mainWindow: BrowserWindow): void {
       throw new Error(`Invalid file path for preview: expected a non-empty string, got ${typeof filePath}`)
     }
 
-    const buffer = await sharp(filePath)
+    const buffer = await sharp(await toSharpInput(filePath))
       .resize(200, 200, { fit: 'inside' })
       .jpeg({ quality: 60 })
       .toBuffer()

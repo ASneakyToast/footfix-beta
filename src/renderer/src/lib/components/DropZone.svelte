@@ -29,7 +29,7 @@
 
   function processFileList(fileList: FileList) {
     const files = Array.from(fileList)
-      .filter((f) => f.type.startsWith('image/'))
+      .filter((f) => f.type.startsWith('image/') || /\.(heic|heif)$/i.test(f.name))
       .map((f) => ({
         path: window.api.getFilePath(f),
         name: f.name,
@@ -63,7 +63,7 @@
       Drop images here or click to browse
     </p>
     <p class="text-xs" style="color: var(--color-text-muted);">
-      Supports JPEG, PNG, WebP
+      Supports JPEG, PNG, WebP, HEIC
     </p>
   </div>
 </button>
@@ -72,7 +72,7 @@
   bind:this={fileInput}
   type="file"
   multiple
-  accept="image/*"
+  accept="image/*,.heic,.heif"
   class="hidden"
   onchange={handleFileInput}
   aria-hidden="true"
